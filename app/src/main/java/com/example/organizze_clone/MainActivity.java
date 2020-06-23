@@ -1,4 +1,4 @@
-package com.example.base_app;
+package com.example.organizze_clone;
 
 import android.os.Bundle;
 
