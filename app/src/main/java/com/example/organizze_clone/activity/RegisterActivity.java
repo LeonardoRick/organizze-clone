@@ -80,13 +80,13 @@ public class RegisterActivity extends AppCompatActivity implements ShowLongToast
                     try {
                         throw task.getException();
                     } catch (FirebaseAuthWeakPasswordException e) {
-                        exceptionText = "Type a stronger password! (numbers and letters at least)";
+                        exceptionText = "Senha fraca, insira uma senha com letras e números pelo menos";
                     } catch (FirebaseAuthInvalidCredentialsException e) {
-                        exceptionText = "Please, type a valid email";
+                        exceptionText = "Por favor, insira um email válido";
                     } catch (FirebaseAuthUserCollisionException e) {
-                        exceptionText = "This email is already registered";
+                        exceptionText = "Esse email já está registrado";
                     } catch (Exception e) {
-                        exceptionText = "Error to register user: " + e.getMessage();
+                        exceptionText = "Erro ao registrar o usuário: " + e.getMessage();
                         e.printStackTrace();
                     }
                     showLongToast(exceptionText);
