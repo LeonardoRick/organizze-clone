@@ -5,4 +5,14 @@
     <color name="colorAccent">#FF706A</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+
+    <!-- Profit Colors -->
+    <color name="colorPrimaryProfit">#00D39E</color>
+    <color name="colorPrimaryDarkProfit">#00BE8B</color>
+    <color name="colorAccentProfit">#00D39E</color>
+
+    <!-- Spending Colors -->
+    <color name="colorPrimarySpending">#FF706A</color>
+    <color name="colorPrimaryDarkSpending">#E66560</color>
+    <color name="colorAccentSpending">#FF706A</color>
 </resources>

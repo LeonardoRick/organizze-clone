@@ -131,7 +131,8 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_gray_person_24"
                     android:drawablePadding="5dp"
-                    android:hint="Name" />
+                    android:hint="Name"
+                    android:inputType="textVisiblePassword|textNoSuggestions" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

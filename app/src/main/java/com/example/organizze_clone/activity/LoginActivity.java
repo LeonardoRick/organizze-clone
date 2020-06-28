@@ -3,6 +3,7 @@ package com.example.organizze_clone.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.organizze_clone.R;
 import com.example.organizze_clone.config.FirebaseConfig;
+import com.example.organizze_clone.helper.ShowLongToast;
 import com.example.organizze_clone.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -20,24 +22,22 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements ShowLongToast {
+    private FirebaseAuth auth = FirebaseConfig.getFirebaseAuth();
 
-    TextInputEditText emailField, passwordField;
-    Button buttonLogin;
-
-    FirebaseAuth auth;
-
+    private TextInputEditText emailField, passwordField;
+    private Button buttonLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().setTitle("Log In");
 
         emailField = findViewById(R.id.textInputEditTextEmail);
         passwordField = findViewById(R.id.textInputEditTextPassword);
 
         buttonLogin = findViewById(R.id.buttonLogin);
-
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Validate if fields are filled
                 if(emailText.isEmpty() || passwordText.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Fill both fields", Toast.LENGTH_LONG).show();
+                    showLongToast("Preencha todos os campos");
                 } else {
                     loginUser(new User(emailText, passwordText));
                 }
@@ -56,9 +56,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginUser(User user) {
-        auth = FirebaseConfig.getFireBaseAuth();
-
-
         auth.signInWithEmailAndPassword(
                 user.getEmail(),
                 user.getPassword()
@@ -66,20 +63,29 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "User logged in", Toast.LENGTH_SHORT).show();
+                    showLongToast("Usuário logado");
+                    startActivity(new Intent(getApplicationContext(), HomeActivity.class)); //navigate to home
+                    finish(); // to end this activity
                 } else {
+
+                    String exceptionText;
                     try {
                         throw (task.getException());
                     } catch (FirebaseAuthInvalidUserException e) {
-                        Toast.makeText(getApplicationContext(), "User not registered", Toast.LENGTH_LONG).show();
+                        exceptionText = "Usuário não cadastrado";
                     } catch (FirebaseAuthInvalidCredentialsException e) {
-                        Toast.makeText(getApplicationContext(), "Wrong email or password", Toast.LENGTH_LONG).show();
+                        exceptionText = "Wrong email or password";
                     } catch (Exception e) { // default exception
-                        Toast.makeText(getApplicationContext(), "Error to log in: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        exceptionText = "Erro ao efetuar o login";
                     }
-
+                    showLongToast(exceptionText);
                 }
             }
         });
+    }
+
+    @Override
+    public void showLongToast(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
 }

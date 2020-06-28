@@ -1,10 +1,30 @@
 <resources>
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Base Theme to use on both screens that add money values, spending and profit -->
+    <style name="AddMoneyValueTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item> <!-- hide actionBar -->
+        <item name="windowNoTitle">true</item> <!-- hide page title -->
+    </style>
+
+    <style name="ProfitTheme" parent="AddMoneyValueTheme">
+        <item name="colorPrimary">@color/colorPrimaryProfit</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkProfit</item>
+        <item name="colorAccent">@color/colorAccentProfit</item>
+        <item name="headerBackground">?colorPrimary</item>
+    </style>
+
+    <style name="SpendingTheme" parent="AddMoneyValueTheme">
+        <item name="colorPrimary">@color/colorPrimarySpending</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkSpending</item>
+        <item name="colorAccent">@color/colorAccentSpending</item>
+        <item name="headerBackground">?colorPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

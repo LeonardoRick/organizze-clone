@@ -3,6 +3,7 @@ package com.example.organizze_clone.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.organizze_clone.R;
 import com.example.organizze_clone.config.FirebaseConfig;
+import com.example.organizze_clone.helper.ShowLongToast;
 import com.example.organizze_clone.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -20,17 +22,17 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements ShowLongToast {
+    private FirebaseAuth auth = FirebaseConfig.getFirebaseAuth();;
 
-    // screen manipulation
-    TextInputEditText nameField, emailField, passwordField;
-    Button buttonRegister;
+    private TextInputEditText nameField, emailField, passwordField;
+    private Button buttonRegister;
 
-    private FirebaseAuth auth; // used to register user on Firebase
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        getSupportActionBar().setTitle("Cadastro");
 
         nameField = findViewById(R.id.textInputEditTextName);
         emailField = findViewById(R.id.textInputEditTextEmail);
@@ -47,17 +49,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Validate if fields are filled
                 if (textName.isEmpty() || textEmail.isEmpty() || textPassword.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Fill all fields", Toast.LENGTH_LONG).show();
+                    showLongToast("Preencha todos os campos obrigatórios");
                 } else {
                     registerUser(new User(textName, textEmail, textPassword));
-
                 }
             }
         });
     }
 
-    public void registerUser(User user) {
-        auth = FirebaseConfig.getFireBaseAuth();
+    public void registerUser(final User user) {
         auth.createUserWithEmailAndPassword(
                 user.getEmail(),
                 user.getPassword()
@@ -65,7 +65,15 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Sucess to register user", Toast.LENGTH_LONG).show();
+                    user.setId(auth.getCurrentUser().getUid());
+                    user.saveOnDatabase();
+
+                    showLongToast("Sucesso ao registrar usuário");
+
+                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+
+                    startActivity(intent);
+                    finish(); // to end this activity
                 } else {
                     // treating thrown exceptions
                     String exceptionText = "";
@@ -81,11 +89,15 @@ public class RegisterActivity extends AppCompatActivity {
                         exceptionText = "Error to register user: " + e.getMessage();
                         e.printStackTrace();
                     }
-                    Toast.makeText(getApplicationContext(), exceptionText, Toast.LENGTH_LONG).show();
-                    exceptionText = "";
+                    showLongToast(exceptionText);
                 }
 
             }
         });
+    }
+
+    @Override
+    public void showLongToast(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
 }
