@@ -29,6 +29,7 @@ import com.example.organizze_clone.helper.CustomDate;
 import com.example.organizze_clone.model.Transaction;
 import com.example.organizze_clone.model.User;
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,6 +56,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private TextView textHello, textBalance;
     private FloatingActionButton fabProfit, fabSpending;
+    private FloatingActionMenu mainFab;
+
     private MaterialCalendarView calendarView;
     private RecyclerView recyclerTransactions;
 
@@ -72,6 +75,8 @@ public class HomeActivity extends AppCompatActivity {
 
         fabProfit = findViewById(R.id.fabProfit);
         fabSpending = findViewById(R.id.fabSpending);
+        mainFab = findViewById(R.id.mainFab);
+
         setFABicons();
 
         calendarViewConfig();
@@ -185,7 +190,7 @@ public class HomeActivity extends AppCompatActivity {
 
         transactionsAdapter.notifyDataSetChanged();
 
-        User.updateUserBalance(transaction);
+        User.updateUserBalance(transaction, true);
     }
 
 
@@ -194,6 +199,20 @@ public class HomeActivity extends AppCompatActivity {
         recyclerTransactions = findViewById(R.id.recyclerTransactions);
         recyclerTransactions.setLayoutManager(layoutManager);
         recyclerTransactions.setHasFixedSize(true);
+
+        // hide FAB Menu (mainFab) when list is scrolled until the end
+        recyclerTransactions.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy >  0) {
+                    mainFab.hideMenu(true);
+                }
+                if(dy < 0) {
+                    mainFab.showMenu(true);
+                }
+            }
+        });
 
         // Set adapter
         transactionsAdapter = new TransactionsAdapter(getApplicationContext(), transactionsList);

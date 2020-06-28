@@ -66,9 +66,6 @@ public class CustomDate {
             String[] splitedDate2 = date2.split("/");
             String monthDate2 = splitedDate2[1];
 
-            Log.d("TAG", "verifyEqualMonth1: " + monthDate1);
-            Log.d("TAG", "verifyEqualMonth2: " + monthDate2);
-
             if(monthDate1.equals(monthDate2)) return true;
             return false;
         }

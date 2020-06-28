@@ -81,7 +81,7 @@ public class TransactionActivity extends AppCompatActivity implements ShowLongTo
                 transaction.setType(type); // "profit" or "spending"
                 transaction.saveOnDatabase();
 
-                user.updateUserBalance(transaction); //update user profit or spending values
+                user.updateUserBalance(transaction, false); //update user profit or spending values
 
                 finish();
             } else {
@@ -162,7 +162,6 @@ public class TransactionActivity extends AppCompatActivity implements ShowLongTo
         String today = CustomDate.getCurrentDate();
         String selectedDate = getIntent().getExtras().getString(Constants.KEY_CURRENT_MONTH);
         if(CustomDate.verifyEqualMonth(selectedDate, today)) {
-            Log.d("ENTREI", "configDateLabel: ");
             textInputDate.setText(today);
         } else {
             textInputDate.setText(selectedDate);

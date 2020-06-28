@@ -44,7 +44,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         // get info from transactions list on specified position
         Transaction transaction = transactionsList.get(position);
 
-        holder.textValue.setText(String.valueOf(transaction.getValue()));
+        holder.textValue.setText(String.format("%.2f", transaction.getValue()));
         holder.textCategory.setText(transaction.getCategory());
         holder.textDesc.setText(transaction.getDesc());
 

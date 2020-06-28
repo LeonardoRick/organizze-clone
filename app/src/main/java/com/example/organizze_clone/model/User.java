@@ -1,6 +1,7 @@
 package com.example.organizze_clone.model;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.organizze_clone.helper.Constants;
@@ -8,6 +9,8 @@ import com.example.organizze_clone.config.FirebaseConfig;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
+
+import java.text.DecimalFormat;
 
 import androidx.annotation.NonNull;
 
@@ -45,12 +48,13 @@ public class User {
      * @param transaction to update user database
      */
 
-    //TODO: lembrar que quando você adiciona ou remove, o processo deveria ser diferente. Ex: quando remove um spending, ta aumentando a divida do cara
-    public static void updateUserBalance(Transaction transaction) {
+    public static void updateUserBalance(Transaction transaction, Boolean removeTransactionFromDatabase) {
         Double oldValue;
         Double updatedValue;
         String keyToUpdate;
-        if(transaction.getType() == Constants.UserNode.TOTAL_PROFIT) {
+        DecimalFormat twoDigitsForm = new DecimalFormat("0.00");
+
+        if(transaction.getType().equals(Constants.TransactionNode.PROFIT)) {
             oldValue = totalProfit;
             keyToUpdate = Constants.UserNode.TOTAL_PROFIT;
         } else {
@@ -58,20 +62,22 @@ public class User {
             keyToUpdate = Constants.UserNode.TOTAL_SPENDING;
         }
 
-        updatedValue = oldValue + transaction.getValue();
+        if(removeTransactionFromDatabase) {
+            updatedValue = Double.valueOf(
+                    twoDigitsForm.format(oldValue - transaction.getValue()) // format to round to two digits
+            );
+        } else { // if its not a remove value, we should updateUserBalance adding the value
+            updatedValue = Double.valueOf(
+                    twoDigitsForm.format(oldValue + transaction.getValue())
+            );
+        }
+
         FirebaseConfig.getFirebaseDatabase()
                 .child(Constants.UserNode.KEY)
                 .child(FirebaseConfig.getFirebaseAuth().getUid())
                 .child(keyToUpdate)
-                .setValue(updatedValue)
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(context, "A coisa deu errado :( \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .setValue(updatedValue);
     }
-
 
     /******** getters and setters *********/
     @Exclude
