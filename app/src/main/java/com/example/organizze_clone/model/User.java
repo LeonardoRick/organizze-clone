@@ -1,18 +1,11 @@
 package com.example.organizze_clone.model;
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.example.organizze_clone.helper.Constants;
 import com.example.organizze_clone.config.FirebaseConfig;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
 import java.text.DecimalFormat;
-
-import androidx.annotation.NonNull;
 
 public class User {
 
